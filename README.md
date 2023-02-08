@@ -8,3 +8,16 @@
 
 ## 프로그래밍 요구 사항
 - 객체지향 생활 체조 원칙을 지키면서 프로그래밍한다.
+
+## 클래스 스팩
+### View
+- InputView
+  - controller에 input 받은 값들을 전달
+- OutputView
+  - 화면 출력
+
+### Domain
+- MineMap
+
+### Controller
+- MineGameController
