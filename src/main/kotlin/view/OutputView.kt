@@ -1,5 +1,6 @@
 package view
 
+import domain.Coordinate
 import domain.MineMap
 
 object OutputView {
@@ -7,15 +8,15 @@ object OutputView {
 
     fun printMineMap(mineMap: MineMap) {
         println(MINE_MAP_MESSAGE)
-        for (x in 0 until mineMap.height) {
-            printMineMapRow(mineMap, x)
+        for (rowNum in 0 .. mineMap.getMaxRowNum()) {
+            printMineMapRow(mineMap, rowNum)
             println()
         }
     }
 
     private fun printMineMapRow(mineMap: MineMap, rowNum: Int) {
-        for (y in 0 until mineMap.width) {
-            if (mineMap.isMine(rowNum, y)) print("x ") else print(". ")
+        for (colNum in 0 .. mineMap.getMaxColNum()) {
+            print(mineMap.getTileStatusInCoordinate(Coordinate(rowNum, colNum)).displayChar + " ")
         }
     }
 }
