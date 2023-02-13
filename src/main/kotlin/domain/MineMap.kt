@@ -12,7 +12,7 @@ class MineMap (private val width: Width,
         get() = width.width * height.height
 
     init {
-        require(mineCount.isLessThan(area)) { "Mine Count should be less than area!" }
+        require(mineCount.isLessThan(area + 1)) { "Mine Count should be less than area!" }
         mineMap = mapGeneratingStrategy.generateMap(width, height, mineCount)
     }
 
@@ -23,11 +23,14 @@ class MineMap (private val width: Width,
         mapGeneratingStrategy
     )
 
-    fun isCoordinateInsideMap(coordinate: Coordinate): Boolean {
+    private fun isCoordinateInsideMap(coordinate: Coordinate): Boolean {
         return height.isRowBetween(coordinate) && width.isColBetween(coordinate)
     }
 
     fun getTileStatusInCoordinate(coordinate: Coordinate): TileStatus {
+        if (!isCoordinateInsideMap(coordinate)) {
+            throw IllegalArgumentException("Coordinate is outside of map.")
+        }
         return mineMap[coordinate.row][coordinate.col].status
     }
 

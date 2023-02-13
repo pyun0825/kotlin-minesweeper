@@ -1,59 +1,72 @@
 package domain
 
+import dto.MineMapRequestDto
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 
 class MineMapTest {
-    @DisplayName("N개의 다른 좌표 생성 테스트")
-    @Test
-    fun generateNDistinctCoordinatesTest() {
+    @DisplayName("MineMap 생성 성공")
+    @ValueSource(ints = [1, 2, 3, 4, 5, 6, 7, 8, 9])
+    @ParameterizedTest()
+    fun generateMineMap_Success(mineCount: Int) {
         //given
-        val n = 3
-        val width = 5
-        val height = 5
+        val mineMapRequestDto = MineMapRequestDto(3, 3, mineCount)
+        val randomMapGeneratingStrategy = RandomMapGeneratingStrategy()
         //when
-        val coordinates = generateNDistinctCoordinates(n, width, height)
         //then
-        Assertions.assertThat(coordinates).hasSize(n)
+        Assertions.assertThatNoException().isThrownBy { MineMap(mineMapRequestDto, randomMapGeneratingStrategy) }
     }
 
-    @DisplayName("지뢰 있는 좌표에서 지뢰 검출")
-    @Test
-    fun isMineTrue() {
+    @DisplayName("MineMap 생성 실패")
+    @ValueSource(ints = [10, 11, 12, 13, 14])
+    @ParameterizedTest()
+    fun generateMineMap_Fail(mineCount: Int) {
         //given
-        val width = 1
-        val height = 1
-        val mineCount = 1
+        val mineMapRequestDto = MineMapRequestDto(3, 3, mineCount)
+        val randomMapGeneratingStrategy = RandomMapGeneratingStrategy()
         //when
-        val mineMap = MineMap(width, height, mineCount)
         //then
-        Assertions.assertThat(mineMap.isMine(0, 0)).isTrue
+        Assertions.assertThatIllegalArgumentException().isThrownBy { MineMap(mineMapRequestDto, randomMapGeneratingStrategy) }
     }
 
-    @DisplayName("지뢰 없는 좌표에서 지뢰 검출 실패")
+    @DisplayName("getMaxRowNum이 입력한 Height - 1 와 동일한 수 반환")
     @Test
-    fun isMineFalse() {
+    fun getMaxRowNum() {
         //given
-        val width = 1
-        val height = 1
-        val mineCount = 0
+        val height = 3
+        val mineMapRequestDto = MineMapRequestDto(3, height, 1)
+        val randomMapGeneratingStrategy = RandomMapGeneratingStrategy()
         //when
-        val mineMap = MineMap(width, height, mineCount)
+        val mineMap = MineMap(mineMapRequestDto, randomMapGeneratingStrategy)
         //then
-        Assertions.assertThat(mineMap.isMine(0, 0)).isFalse
+        Assertions.assertThat(mineMap.getMaxRowNum()).isEqualTo(height-1)
     }
 
-    @DisplayName("좌표 범위 벗어난 곳에 지뢰 검출 시 예외 발생")
+    @DisplayName("getMaxColNum이 입력한 Width - 1 와 동일한 수 반환")
     @Test
-    fun validateTest() {
+    fun getMaxColNum() {
         //given
-        val width = 1
-        val height = 1
-        val mineCount = 0
+        val width = 3
+        val mineMapRequestDto = MineMapRequestDto(width, 3, 1)
+        val randomMapGeneratingStrategy = RandomMapGeneratingStrategy()
         //when
-        val mineMap = MineMap(width, height, mineCount)
+        val mineMap = MineMap(mineMapRequestDto, randomMapGeneratingStrategy)
         //then
-        Assertions.assertThatIllegalArgumentException().isThrownBy { mineMap.isMine(2, 2) }
+        Assertions.assertThat(mineMap.getMaxColNum()).isEqualTo(width - 1)
+    }
+
+    @DisplayName("무조건 Mine인 칸에서 status MINE으로 검출")
+    @Test
+    fun getTileStatusInCoordinate() {
+        //given
+        val mineMapRequestDto = MineMapRequestDto(1, 1, 1)
+        val randomMapGeneratingStrategy = RandomMapGeneratingStrategy()
+        //when
+        val mineMap = MineMap(mineMapRequestDto, randomMapGeneratingStrategy)
+        //then
+        Assertions.assertThat(mineMap.getTileStatusInCoordinate(Coordinate(0, 0))).isEqualTo(TileStatus.MINE)
     }
 }
