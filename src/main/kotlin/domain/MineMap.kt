@@ -24,7 +24,7 @@ class MineMap (private val width: Width,
     )
 
     private fun validateThatCoordinateIsInsideMap(coordinate: Coordinate) {
-        if (height.isRowBetween(coordinate) && width.isColBetween(coordinate)) {
+        if (!height.isRowBetween(coordinate) || !width.isColBetween(coordinate)) {
             throw IllegalArgumentException("Coordinate is outside of map.")
         }
     }
