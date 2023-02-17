@@ -22,10 +22,10 @@ object OutputView {
     }
 
     private fun printMineMapTile(mineMap: MineMap, coordinate: Coordinate) {
-        if (mineMap.getTileStatusInCoordinate(coordinate) == TileStatus.NORMAL) {
+        if (mineMap.getTileStatusInCoordinate(coordinate) == TileStatus.OPEN) {
             print(mineMap.getNumberOfMinesAroundCoordinate(coordinate).toString() + " ")
             return
         }
-        print(mineMap.getTileStatusInCoordinate(coordinate).displayChar + " ")
+        print(". ")
     }
 }
