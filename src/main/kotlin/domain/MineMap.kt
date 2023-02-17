@@ -69,4 +69,28 @@ class MineMap (private val width: Width,
     fun getMaxColNum(): Int {
         return width.width - 1
     }
+
+    fun isMine(coordinate: Coordinate): Boolean {
+        validateThatCoordinateIsInsideMap(coordinate)
+        return mineMap[coordinate.row][coordinate.col].status == TileStatus.MINE;
+    }
+
+    fun openCoordinate(coordinate: Coordinate) {
+        validateThatCoordinateIsInsideMap(coordinate)
+        mineMap[coordinate.row][coordinate.col].openTile()
+    }
+
+    fun openAroundCoordinate(coordinate: Coordinate) {
+        validateThatCoordinateIsInsideMap(coordinate)
+        val startCoordinateOfSubMap = getStartCoordinateOfSubMap(coordinate)
+        val endCoordinateOfSubMap = getEndCoordinateOfSubMap(coordinate)
+
+        for (row in startCoordinateOfSubMap.row..endCoordinateOfSubMap.row) {
+            for (col in startCoordinateOfSubMap.col..endCoordinateOfSubMap.col) {
+                if (mineMap[row][col].status == TileStatus.NORMAL) {
+                    mineMap[row][col].openTile()
+                }
+            }
+        }
+    }
 }
