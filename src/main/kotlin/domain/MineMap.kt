@@ -93,4 +93,8 @@ class MineMap (private val width: Width,
             }
         }
     }
+
+    fun isNormalAllOpened(): Boolean {
+        return !mineMap.flatten().map { it.status }.contains(TileStatus.NORMAL)
+    }
 }

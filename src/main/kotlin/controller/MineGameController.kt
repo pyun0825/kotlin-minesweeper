@@ -12,6 +12,21 @@ class MineGameController {
         val mineMapRequestDto = InputView.getInitialInput()
         val randomMapGeneratingStrategy = RandomMapGeneratingStrategy()
         mineMap = MineMap(mineMapRequestDto, randomMapGeneratingStrategy)
-        OutputView.printMineMap(mineMap)
+        while (true) {
+            OutputView.printMineMap(mineMap)
+            if (mineMap.isNormalAllOpened()) {
+                OutputView.printGameWin()
+                return
+            }
+            val targetCoordinate = InputView.getTargetCoordinate()
+            if (mineMap.isMine(targetCoordinate)) {
+                OutputView.printGameOver()
+                return
+            }
+            mineMap.openCoordinate(targetCoordinate)
+            if (mineMap.getNumberOfMinesAroundCoordinate(targetCoordinate) == 0) {
+                mineMap.openAroundCoordinate(targetCoordinate)
+            }
+        }
     }
 }
